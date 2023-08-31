@@ -5,24 +5,7 @@ models.py
 import os
 
 
-class FileManipulations:
-    @classmethod
-    def remove_background_photo(cls, image):
-        """function to remove background"""
-        try:
-            import rembg
-            from PIL import Image, UnidentifiedImageError
-
-            output_path = os.path.splitext(image)[0]
-
-            inp = Image.open(image)
-            output = rembg.remove(inp)
-            output.save(output_path + '.png')
-        except UnidentifiedImageError:
-            print('Formato de arquivo errado')
-        except:
-            print('Erro interno')
-
+class DocumentManipulations:
     @classmethod
     def word_equal_pdf(cls, input_path, convert_to, output_path=None):
         """
@@ -53,15 +36,6 @@ class FileManipulations:
             pdf.close()
 
     @classmethod
-    def convert_to_png(cls, input_path, output_path=None):
-        from PIL import Image
-        if output_path is None:
-            output_path = os.path.splitext(input_path)[0]
-
-        with Image.open(input_path) as img:
-            img.save(f'{output_path}.png', 'PNG')
-
-    @classmethod
     def merge_pdf(cls, pdfs):
         import PyPDF2
 
@@ -83,6 +57,46 @@ class FileManipulations:
                 save_img = PdfImage(image)
                 # editar depois para o site
                 save_img.extract_to(fileprefix=f'images/{name}')
+
+
+# FileManipulations.remove_background_photo('../eu.jpg')
+# FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
+# FileManipulations.convert_to_png('../eu.jpg')
+# FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
+# FileManipulations.join_audios('../')
+# FileManipulations.text_to_qrcode('Ola mundo')
+# with open('../Romeo and Juliet.txt', 'r') as file:
+#    text = file.read()
+# FileManipulations.new(text, '../romeo.jpg')
+# FileManipulations.wordcloud(text, '../romeo.jpg')
+
+
+class MediaManipulations:
+    @classmethod
+    def remove_background_photo(cls, image):
+        """function to remove background"""
+        try:
+            import rembg
+            from PIL import Image, UnidentifiedImageError
+
+            output_path = os.path.splitext(image)[0]
+
+            inp = Image.open(image)
+            output = rembg.remove(inp)
+            output.save(output_path + '.png')
+        except UnidentifiedImageError:
+            print('Formato de arquivo errado')
+        except:
+            print('Erro interno')
+
+    @classmethod
+    def convert_to_png(cls, input_path, output_path=None):
+        from PIL import Image
+        if output_path is None:
+            output_path = os.path.splitext(input_path)[0]
+
+        with Image.open(input_path) as img:
+            img.save(f'{output_path}.png', 'PNG')
 
     @classmethod
     def video_to_audio(cls, video_path, format_to_save='.mp3', output_audio_path=None):
@@ -110,6 +124,8 @@ class FileManipulations:
         final_clip = concatenate_audioclips(clips)
         final_clip.write_audiofile(output_path + 'final_audio.mp3')
 
+
+class ImageCreator:
     @classmethod
     def text_to_qrcode(cls, text):
         import qrcode
@@ -157,15 +173,3 @@ class FileManipulations:
             plt.axis("off")
             plt.show()
             wordcloud.to_file("simple_wordcloud.png")
-
-
-# FileManipulations.remove_background_photo('../eu.jpg')
-# FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
-# FileManipulations.convert_to_png('../eu.jpg')
-# FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
-# FileManipulations.join_audios('../')
-# FileManipulations.text_to_qrcode('Ola mundo')
-# with open('../Romeo and Juliet.txt', 'r') as file:
-#    text = file.read()
-# FileManipulations.new(text, '../romeo.jpg')
-# FileManipulations.wordcloud(text, '../romeo.jpg')
