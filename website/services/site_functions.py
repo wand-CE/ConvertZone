@@ -6,6 +6,12 @@ import os
 
 
 class DocumentManipulations:
+    class_name = 'Manipulação de documentos'
+    method_names = {
+        'word_equal_pdf': 'Converta Word para PDF e PDF para Word',
+        'merge_pdf': 'Junte vários PDFs', 'extract_img_pdf': 'Extraia imagens de pdfs',
+    }
+
     @classmethod
     def word_equal_pdf(cls, input_path, convert_to, output_path=None):
         """
@@ -59,19 +65,15 @@ class DocumentManipulations:
                 save_img.extract_to(fileprefix=f'images/{name}')
 
 
-# FileManipulations.remove_background_photo('../eu.jpg')
-# FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
-# FileManipulations.convert_to_png('../eu.jpg')
-# FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
-# FileManipulations.join_audios('../')
-# FileManipulations.text_to_qrcode('Ola mundo')
-# with open('../Romeo and Juliet.txt', 'r') as file:
-#    text = file.read()
-# FileManipulations.new(text, '../romeo.jpg')
-# FileManipulations.wordcloud(text, '../romeo.jpg')
-
-
 class MediaManipulations:
+    class_name = 'Manipulação de midias'
+    method_names = {
+        'remove_background_photo': 'Remova o fundo de imagens',
+        'convert_to_png': 'Converta imagens para png',
+        'video_to_audio': 'Converta video para audio',
+        'join_audios': 'Junte varios audios em um só',
+    }
+
     @classmethod
     def remove_background_photo(cls, image):
         """function to remove background"""
@@ -125,7 +127,13 @@ class MediaManipulations:
         final_clip.write_audiofile(output_path + 'final_audio.mp3')
 
 
-class ImageCreator:
+class TextToImage:
+    class_name = 'Criar imagens'
+    method_names = {
+        'text_to_qrcode': 'Crie seu próprio QR Code',
+        'wordcloud': 'Crie sua própria nuvem de palavras',
+    }
+
     @classmethod
     def text_to_qrcode(cls, text):
         import qrcode
@@ -140,6 +148,7 @@ class ImageCreator:
 
     @classmethod
     def wordcloud(cls, text, image=None):
+
         import numpy as np
         from PIL import Image, ImageOps
         import matplotlib.pyplot as plt
@@ -173,3 +182,17 @@ class ImageCreator:
             plt.axis("off")
             plt.show()
             wordcloud.to_file("simple_wordcloud.png")
+
+
+# MediaManipulations.remove_background_photo('../video_to_audio.webp')
+# FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
+# FileManipulations.convert_to_png('../eu.jpg')
+# FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
+# FileManipulations.join_audios('../')
+
+# print(TextToImage.wordcloud)
+# TextToImage.text_to_qrcode('https://github.com/wand-CE')
+# with open('../Romeo and Juliet.txt', 'r') as file:
+#    text = file.read()
+# FileManipulations.new(text, '../romeo.jpg')
+# FileManipulations.wordcloud(text, '../romeo.jpg')

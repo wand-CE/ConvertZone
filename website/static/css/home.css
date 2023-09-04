@@ -1,0 +1,16 @@
+.services img {
+  height: auto;
+}
+
+.services {
+  max-height: 400px;
+  height: 400px;
+  overflow: hidden;
+  width: 300px;
+  align-items: center;
+}
+
+.card-body {
+  position: absolute;
+  bottom: 0;
+}
