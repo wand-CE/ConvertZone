@@ -1,0 +1,6 @@
+{% extends 'base.html' %} {% block styles %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/' + category.name + '.css') }}"
+/>
+{% endblock %} {% block conteudo %} {% include 'includes/' + category.name +
+'.html' %} {% endblock %}

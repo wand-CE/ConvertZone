@@ -167,30 +167,25 @@ class TextToImage:
             edges = np.mean([gaussian_gradient_magnitude(
                 image[:, :, i] / 255., 2) for i in range(3)], axis=0)
             image_mask[edges > .1] = 255
-            wordcloud = WordCloud(background_color='black',
+            wordcloud = WordCloud(width=canvas_width, height=canvas_height, background_color='black',
                                   mask=image_mask, mode='RGBA')
             wordcloud.generate(text)
             image_colors = ImageColorGenerator(image)
             wordcloud.recolor(color_func=image_colors)
-            plt.figure(figsize=(10, 10))
-            plt.imshow(wordcloud, interpolation="bilinear")
             wordcloud.to_file("../color_masked_wordcloud.png")
         else:
             wordcloud = WordCloud(
                 width=canvas_width, height=canvas_height, random_state=1).generate(text)
-            plt.imshow(wordcloud, interpolation='bilinear')
-            plt.axis("off")
-            plt.show()
             wordcloud.to_file("simple_wordcloud.png")
 
 
-# MediaManipulations.remove_background_photo('../video_to_audio.webp')
+# MediaManipulations.remove_background_photo('../eu.jpg')
 # FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
 # FileManipulations.convert_to_png('../eu.jpg')
 # FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
 # FileManipulations.join_audios('../')
-
-# print(TextToImage.wordcloud)
+"""with open('../romeo.txt', 'r') as text:
+    TextToImage.wordcloud(text.read(), '../eu2.png')"""
 # TextToImage.text_to_qrcode('https://github.com/wand-CE')
 # with open('../Romeo and Juliet.txt', 'r') as file:
 #    text = file.read()

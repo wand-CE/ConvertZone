@@ -23,6 +23,6 @@ def create_app():
 def create_tables(app):
     with app.app_context():
         db.create_all()
-        from website.models.servicos_model import insert_function_names
-        insert_function_names()
+        # from website.models.servicos_model import insert_function_names
+        # insert_function_names()
         # remove above comment if there's more functions to add to the site

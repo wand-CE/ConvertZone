@@ -8,3 +8,14 @@ views = Blueprint('views', __name__)
 def main():
     categories = Category.get_categories()
     return render_template('home.html', categories=categories)
+
+
+@views.route('/servico/<categoryName>/<serviceName>', methods=['GET'])
+def servico(categoryName, serviceName):
+    category = Category.query.filter_by(name=categoryName).first()
+    service = Service.query.filter_by(function_name=serviceName).first()
+
+    return render_template('services.html',
+                           category=category,
+                           service=service
+                           )
