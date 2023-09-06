@@ -1,1 +1,38 @@
-inicio
+<div class="container mt-5">
+  <h3>{{ service.name_on_site }}</h3>
+  <br />
+  <h5>Faça o upload abaixo:</h5>
+  <form action="/api/oi" method="post" enctype="multipart/form-data">
+    <div id="dropZone" class="bg-white rounded">
+      Arraste aqui o arquivo ou arquivos desejados, ou clique para selecionar
+      <div id="pdfDisplay" class="mt-4"></div>
+    </div>
+    {% if service.multiple == '1' %}
+    <input
+      type="file"
+      id="pdfInput"
+      name="pdfFiles[]"
+      style="display: none"
+      accept="{{ service.extensions }}"
+      multiple
+    />
+    {% else %}
+    <input
+      type="file"
+      id="pdfInput"
+      name="pdfFiles[]"
+      style="display: none"
+      accept="{{ service.extensions }}"
+    />
+    {% endif %}
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary my-5 px-4 send">
+        Enviar
+      </button>
+    </div>
+  </form>
+</div>
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js"></script>
+{% endblock %}

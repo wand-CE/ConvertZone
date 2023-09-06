@@ -3,4 +3,6 @@
   href="{{ url_for('static', filename='css/' + category.name + '.css') }}"
 />
 {% endblock %} {% block conteudo %} {% include 'includes/' + category.name +
-'.html' %} {% endblock %}
+'.html' %} {% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/' + category.name + '.js') }}"></script>
+{% endblock %}
