@@ -3,7 +3,7 @@ from ..services.site_functions import TextToImage, MediaManipulations, DocumentM
 
 category_functions = db.Table('category_functions',
                               db.Column('service_id', db.Integer, db.ForeignKey(
-                                  'services.id')),  # Updated to 'services.id'
+                                  'services.id')),
                               db.Column('category_id', db.Integer, db.ForeignKey('category.id')))
 
 
@@ -13,13 +13,19 @@ class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     function_name = db.Column(db.String, nullable=False)
     name_on_site = db.Column(db.String, nullable=False)
+    multiple = db.Column(db.String, nullable=False)
+    extensions = db.Column(db.String, nullable=False)
 
-    def __init__(self, function_name, name_on_site, id=None):
+    def __init__(self, function_name,
+                 name_on_site, multiple,
+                 extensions, id=None):
         self.id = id
         self.function_name = function_name
         self.name_on_site = name_on_site
+        self.multiple = multiple
+        self.extensions = extensions
 
-    def add_service(self):  # Renamed for clarity
+    def add_service(self):
         db.session.add(self)
         db.session.commit()
 
@@ -32,21 +38,21 @@ class Service(db.Model):
         return Service.query.get(id)
 
 
-class Category(db.Model):  # Added inheritance
+class Category(db.Model):
     __tablename__ = 'category'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     name_on_site = db.Column(db.String, nullable=False)
     functions = db.relationship(
-        'Service', backref='category', secondary=category_functions)  # Updated backref
+        'Service', backref='category', secondary=category_functions)
 
     def __init__(self, name, name_on_site, id=None):
         self.id = id
         self.name = name
         self.name_on_site = name_on_site
 
-    def add_category(self):  # Renamed for clarity
+    def add_category(self):
         db.session.add(self)
         db.session.commit()
 
@@ -79,7 +85,14 @@ def insert_function_names():
         for func_name, value in vars(cls).items():
             if not Service.query.filter_by(function_name=func_name).first():
                 if isinstance(value, classmethod) and not func_name.startswith("__"):
+                    attributes = cls.attributes.get(func_name, func_name)
+
                     service = Service(
-                        function_name=func_name, name_on_site=cls.method_names.get(func_name, func_name))
+                        function_name=func_name,
+                        name_on_site=attributes[0],
+                        multiple=attributes[1],
+                        extensions=attributes[2],
+                    )
+
                     service.add_service()
                     category.add_service_to_category(service)
