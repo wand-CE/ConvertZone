@@ -3,13 +3,22 @@ Wanderson soares dos santos - UTF-8 - pt-Br - 26/08/2023
 models.py
 """
 import os
+import numpy as np
+from PIL import Image, ImageOps, UnidentifiedImageError
+
+
+# all classes have a dictionary named 'attributtes', where the key is the name of the functions,
+# and receive a list on value, where the first element of list is the name that goes on site,
+# and the second value is a boolean that specifies if the element will receive many files
+# in the input on the page, the third value represents the extensions accept by the functions.
 
 
 class DocumentManipulations:
     class_name = 'Manipulação de documentos'
-    method_names = {
-        'word_equal_pdf': 'Converta Word para PDF e PDF para Word',
-        'merge_pdf': 'Junte vários PDFs', 'extract_img_pdf': 'Extraia imagens de pdfs',
+    attributes = {
+        'word_equal_pdf': ['Converta Docx para PDF ou PDF para Docx', False, '.pdf,.docx'],
+        'merge_pdf': ['Junte vários PDFs', True, '.pdf'],
+        'extract_img_pdf': ['Extraia imagens de um PDF', False, '.pdf'],
     }
 
     @classmethod
@@ -42,16 +51,23 @@ class DocumentManipulations:
             pdf.close()
 
     @classmethod
-    def merge_pdf(cls, pdfs):
+    def merge_pdf(cls, pdfs, path):
         import PyPDF2
 
-        merger = PyPDF2.PdfFileMerger(strict=False)
+        merger = PyPDF2.PdfMerger(strict=False)
 
         for pdf in pdfs:
             if ".pdf" in pdf:
                 merger.append(f'{pdf}')
 
-        merger.write('pdf_final.pdf')
+        i = 1
+        while True:
+            files = os.listdir(path)
+            if f'final_pdf{i}.pdf' not in files:
+                with open(os.path.join(path, f'final_pdf{i}.pdf'), 'wb') as output_file:
+                    merger.write(output_file)
+                    break
+            i += 1
 
     @classmethod
     def extract_img_pdf(cls, pdf):
@@ -67,11 +83,11 @@ class DocumentManipulations:
 
 class MediaManipulations:
     class_name = 'Manipulação de midias'
-    method_names = {
-        'remove_background_photo': 'Remova o fundo de imagens',
-        'convert_to_png': 'Converta imagens para png',
-        'video_to_audio': 'Converta video para audio',
-        'join_audios': 'Junte varios audios em um só',
+    attributes = {
+        'remove_background_photo': ['Remova o fundo de uma imagem', False, 'image/*'],
+        'convert_to_png': ['Converta uma imagem para png', False, 'image/*'],
+        'video_to_audio': ['Converta .mp4 para .mp3', False, '.mp4'],
+        'join_audios': ['Junte vários arquivos .mp3 em um só', True, '.mp3'],
     }
 
     @classmethod
@@ -79,7 +95,6 @@ class MediaManipulations:
         """function to remove background"""
         try:
             import rembg
-            from PIL import Image, UnidentifiedImageError
 
             output_path = os.path.splitext(image)[0]
 
@@ -93,7 +108,6 @@ class MediaManipulations:
 
     @classmethod
     def convert_to_png(cls, input_path, output_path=None):
-        from PIL import Image
         if output_path is None:
             output_path = os.path.splitext(input_path)[0]
 
@@ -129,9 +143,9 @@ class MediaManipulations:
 
 class TextToImage:
     class_name = 'Criar imagens'
-    method_names = {
-        'text_to_qrcode': 'Crie seu próprio QR Code',
-        'wordcloud': 'Crie sua própria nuvem de palavras',
+    attributes = {
+        'text_to_qrcode': ['Crie seu próprio QR Code', False, ''],
+        'wordcloud': ['Crie sua própria nuvem de palavras', False, ''],
     }
 
     @classmethod
@@ -149,8 +163,6 @@ class TextToImage:
     @classmethod
     def wordcloud(cls, text, image=None):
 
-        import numpy as np
-        from PIL import Image, ImageOps
         import matplotlib.pyplot as plt
         from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
         from scipy.ndimage import gaussian_gradient_magnitude
@@ -160,23 +172,21 @@ class TextToImage:
 
         if image is not None:
             image = np.array(Image.open(image))
-
-            image_mask = image.copy()
-            image[image_mask.sum(axis=2) == 0] = 255
-
-            edges = np.mean([gaussian_gradient_magnitude(
-                image[:, :, i] / 255., 2) for i in range(3)], axis=0)
-            image_mask[edges > .1] = 255
-            wordcloud = WordCloud(width=canvas_width, height=canvas_height, background_color='black',
-                                  mask=image_mask, mode='RGBA')
-            wordcloud.generate(text)
-            image_colors = ImageColorGenerator(image)
-            wordcloud.recolor(color_func=image_colors)
-            wordcloud.to_file("../color_masked_wordcloud.png")
         else:
-            wordcloud = WordCloud(
-                width=canvas_width, height=canvas_height, random_state=1).generate(text)
-            wordcloud.to_file("simple_wordcloud.png")
+            image = np.array(Image.open('../nuvem.png'))
+
+        image_mask = image.copy()
+        image[image_mask.sum(axis=2) == 0] = 255
+
+        edges = np.mean([gaussian_gradient_magnitude(
+            image[:, :, i] / 255., 2) for i in range(3)], axis=0)
+        image_mask[edges > .1] = 255
+        wordcloud = WordCloud(width=canvas_width, height=canvas_height, background_color='white',
+                              mask=image_mask, mode='RGBA')
+        wordcloud.generate(text)
+        image_colors = ImageColorGenerator(image)
+        # wordcloud.recolor(color_func=image_colors)
+        wordcloud.to_file("../color_masked_wordcloud.png")
 
 
 # MediaManipulations.remove_background_photo('../eu.jpg')
@@ -184,8 +194,8 @@ class TextToImage:
 # FileManipulations.convert_to_png('../eu.jpg')
 # FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
 # FileManipulations.join_audios('../')
-"""with open('../romeo.txt', 'r') as text:
-    TextToImage.wordcloud(text.read(), '../eu2.png')"""
+with open('../romeo.txt', 'r') as text:
+    TextToImage.wordcloud(text.read())
 # TextToImage.text_to_qrcode('https://github.com/wand-CE')
 # with open('../Romeo and Juliet.txt', 'r') as file:
 #    text = file.read()
