@@ -4,7 +4,7 @@ models.py
 """
 import os
 import numpy as np
-from PIL import Image, ImageOps, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError
 
 
 # all classes have a dictionary named 'attributtes', where the key is the name of the functions,
@@ -194,8 +194,8 @@ class TextToImage:
 # FileManipulations.convert_to_png('../eu.jpg')
 # FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
 # FileManipulations.join_audios('../')
-with open('../romeo.txt', 'r') as text:
-    TextToImage.wordcloud(text.read())
+"""with open('../romeo.txt', 'r') as text:
+    TextToImage.wordcloud(text.read())"""
 # TextToImage.text_to_qrcode('https://github.com/wand-CE')
 # with open('../Romeo and Juliet.txt', 'r') as file:
 #    text = file.read()
