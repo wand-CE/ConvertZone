@@ -2,7 +2,12 @@
   <h3>{{ service.name_on_site }}</h3>
   <br />
   <h5>Faça o upload abaixo:</h5>
-  <form action="/api/oi" method="post" enctype="multipart/form-data">
+  <form
+    action="{{ url_for('http_requests.' + service.function_name) }}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <!--EDITAR DEPOIS-->
     <div id="dropZone" class="bg-white rounded">
       Arraste aqui o arquivo ou arquivos desejados, ou clique para selecionar
       <div id="pdfDisplay" class="mt-4"></div>
@@ -11,7 +16,7 @@
     <input
       type="file"
       id="pdfInput"
-      name="pdfFiles[]"
+      name="files"
       style="display: none"
       accept="{{ service.extensions }}"
       multiple
@@ -28,7 +33,7 @@
 
     <div class="text-center">
       <button type="submit" class="btn btn-primary my-5 px-4 send">
-        Enviar
+        Gerar
       </button>
     </div>
   </form>

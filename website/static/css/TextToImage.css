@@ -1,8 +1,11 @@
 textarea {
   resize: none;
-  font-size: x-large;
+  width: 50%;
+  height: 300px;
 }
 
-.gerar {
-  font-size: xx-large;
+@media (max-width: 990px) {
+  textarea {
+    width: 100%;
+  }
 }

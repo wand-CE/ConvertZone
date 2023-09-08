@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/icon.png') }}"
+    />
     <title>ConvertZone - Principal</title>
 
     <link
@@ -32,16 +36,15 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+          {% for category in categories %}
           <li class="nav-item">
-            <a class="nav-link" href="#oi">Manipulação de Arquivos</a>
+            <a
+              class="nav-link"
+              href="{{ url_for('views.main') }}#category_{{ category.id }}"
+              >{{ category.name_on_site }}</a
+            >
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">QR Code</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Wordclouds</a>
-          </li>
-          <!-- Adicione mais serviços conforme necessário -->
+          {% endfor %}
         </ul>
       </div>
     </nav>

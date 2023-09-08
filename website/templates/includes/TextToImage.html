@@ -1,19 +1,13 @@
 <div class="container mt-5">
-  <h2>{{ service.name_on_site }}</h2>
+  <h3>{{ service.name_on_site }}</h3>
   <p>Descrição breve do serviço.</p>
-  <form action="#" method="post">
+  <form
+    action="{{ url_for('http_requests.' + service.function_name ) }}"
+    method="post"
+  >
     <div class="form-group">
-      <label for="text" style="font-size: xx-large"
-        >Escreva seu texto/link:</label
-      ><br />
-      <textarea
-        class=""
-        id="text"
-        name="text"
-        cols="70"
-        rows="15"
-        required
-      ></textarea>
+      <label for="text">Escreva seu texto/link:</label><br />
+      <textarea id="text" name="text" required></textarea>
     </div>
     <button type="submit" class="btn btn-primary gerar">Gerar</button>
   </form>
