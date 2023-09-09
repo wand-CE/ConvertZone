@@ -5,6 +5,7 @@ models.py
 import os
 import numpy as np
 from PIL import Image, UnidentifiedImageError
+from flask import url_for
 
 
 # all classes have a dictionary named 'attributtes', where the key is the name of the functions,
@@ -44,7 +45,6 @@ class DocumentManipulations:
                 print(f"Error converting Word to PDF: {e}")
         elif convert_to == 'pdf_to_word':
             from pdf2docx import Converter
-
             pdf = Converter(input_path)
             pdf.convert(output_path, start=0, end=None)
 
@@ -70,15 +70,14 @@ class DocumentManipulations:
             i += 1
 
     @classmethod
-    def extract_img_pdf(cls, pdf):
+    def extract_img_pdf(cls, pdf, folder_path):
         from pikepdf import Pdf, PdfImage
 
         final_pdf = Pdf.open(pdf)
         for page in final_pdf.pages:
             for name, image in page.images.items():
                 save_img = PdfImage(image)
-                # editar depois para o site
-                save_img.extract_to(fileprefix=f'images/{name}')
+                save_img.extract_to(fileprefix=f'{folder_path}/{name}')
 
 
 class MediaManipulations:
@@ -149,7 +148,7 @@ class TextToImage:
     }
 
     @classmethod
-    def text_to_qrcode(cls, text):
+    def text_to_qrcode(cls, text, output_path):
         import qrcode
 
         qr = qrcode.QRCode(version=1,  # Nível de correção de erro (1 a 40)
@@ -157,11 +156,16 @@ class TextToImage:
                            border=2,)  # Tamanho da margem em torno do QR code
         qr.add_data(text)
         image = qr.make_image(fill_color="black", back_color="white")
-
-        image.save("../qrcode.png")
+        i = 0
+        while True:
+            file = f'qrcode{i}.png'
+            if file not in os.listdir(output_path):
+                image.save(os.path.join(output_path, file))
+                break
+            i += 1
 
     @classmethod
-    def wordcloud(cls, text, image=None):
+    def wordcloud(cls, text, output_path, image=None):
 
         import matplotlib.pyplot as plt
         from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -173,7 +177,8 @@ class TextToImage:
         if image is not None:
             image = np.array(Image.open(image))
         else:
-            image = np.array(Image.open('../nuvem.png'))
+            image = np.array(Image.open(os.path.join(
+                os.getcwd(), 'website', 'static', 'img', 'nuvem.png')))
 
         image_mask = image.copy()
         image[image_mask.sum(axis=2) == 0] = 255
@@ -186,7 +191,13 @@ class TextToImage:
         wordcloud.generate(text)
         image_colors = ImageColorGenerator(image)
         # wordcloud.recolor(color_func=image_colors)
-        wordcloud.to_file("../color_masked_wordcloud.png")
+        i = 1
+        while True:
+            file = f'wordcloud{i}.png'
+            if file not in os.listdir(output_path):
+                wordcloud.to_file(os.path.join(output_path, file))
+                break
+            i += 1
 
 
 # MediaManipulations.remove_background_photo('../eu.jpg')

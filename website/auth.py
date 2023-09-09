@@ -23,8 +23,6 @@ def ensure_user_id():
     except OSError as e:
         print(f"Erro ao criar diretório {path}: {e}")
 
-    print(session['user_id'])
-
 
 @auth.route('/set_session', methods=['GET', 'POST'])
 def set_session():

@@ -13,7 +13,7 @@ DB_NAME = 'convert_zone.db'
 def create_app():
     from .auth import auth
     from .views import views
-    from .http_requests import http_requests
+    from .controllers.functions_controller import http_requests
 
     app = Flask(__name__)
 
