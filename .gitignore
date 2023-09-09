@@ -1,5 +1,4 @@
 .vscode
 __pycache__
-instance
 temp_users*
 !.gitkeep
