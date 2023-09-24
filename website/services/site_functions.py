@@ -23,7 +23,7 @@ class DocumentManipulations:
     }
 
     @classmethod
-    def word_equal_pdf(cls, input_path, convert_to, output_path=None):
+    def word_equal_pdf(cls, input_path, convert_to, output_path):
         """
         Convert between Word and PDF files.
 
@@ -34,20 +34,27 @@ class DocumentManipulations:
         if convert_to not in ['word_to_pdf', 'pdf_to_word']:
             raise ValueError(
                 "Invalid conversion type. Choose 'word_to_pdf' or 'pdf_to_word'.")
-        if output_path is None:
-            output_path = os.path.splitext(input_path)[0]
 
         if convert_to == 'word_to_pdf':
             from docx2pdf import convert
             try:
+                i = 1
+                while f'PDF{i}.pdf' in os.listdir(output_path):
+                    i += 1
+                output_path = os.path.join(output_path, f'PDF{i}.pdf')
                 convert(input_path, output_path)
             except Exception as e:
                 print(f"Error converting Word to PDF: {e}")
+
         elif convert_to == 'pdf_to_word':
             from pdf2docx import Converter
             pdf = Converter(input_path)
-            pdf.convert(output_path, start=0, end=None)
+            i = 1
+            while f'WORD{i}.docx' in os.listdir(output_path):
+                i += 1
+            output_path = os.path.join(output_path, f'WORD{i}.docx')
 
+            pdf.convert(output_path, start=0, end=None)
             pdf.close()
 
     @classmethod
@@ -70,14 +77,20 @@ class DocumentManipulations:
             i += 1
 
     @classmethod
-    def extract_img_pdf(cls, pdf, folder_path):
+    def extract_img_pdf(cls, input_file, output_path):
         from pikepdf import Pdf, PdfImage
 
-        final_pdf = Pdf.open(pdf)
-        for page in final_pdf.pages:
+        pdf = Pdf.open(input_file)
+
+        for page in pdf.pages:
             for name, image in page.images.items():
                 save_img = PdfImage(image)
-                save_img.extract_to(fileprefix=f'{folder_path}/{name}')
+                i = 1
+                while any(file.startswith(name[1:] + str(i)) for file in os.listdir(output_path)):
+                    i += 1
+                name = name + str(i)
+                save_img.extract_to(
+                    fileprefix=os.path.join(output_path, name[1:]))
 
 
 class MediaManipulations:
@@ -90,54 +103,61 @@ class MediaManipulations:
     }
 
     @classmethod
-    def remove_background_photo(cls, image):
+    def remove_background_photo(cls, image, output_path):
         """function to remove background"""
         try:
             import rembg
 
-            output_path = os.path.splitext(image)[0]
-
             inp = Image.open(image)
             output = rembg.remove(inp)
-            output.save(output_path + '.png')
+
+            i = 1
+            while f'image{i}.png' in os.listdir(output_path):
+                i += 1
+
+            output_file_path = os.path.join(output_path, f'image{i}.png')
+            output.save(output_file_path)
         except UnidentifiedImageError:
             print('Formato de arquivo errado')
         except:
             print('Erro interno')
 
     @classmethod
-    def convert_to_png(cls, input_path, output_path=None):
-        if output_path is None:
-            output_path = os.path.splitext(input_path)[0]
+    def convert_to_png(cls, input_path, output_path):
+        i = 1
+        while f'image{i}.png' in os.listdir(output_path):
+            i += 1
+
+        output_path = os.path.join(output_path, f'image{i}.png')
 
         with Image.open(input_path) as img:
-            img.save(f'{output_path}.png', 'PNG')
+            img.save(output_path, 'PNG')
 
     @classmethod
-    def video_to_audio(cls, video_path, format_to_save='.mp3', output_audio_path=None):
+    def video_to_audio(cls, video_path, output_path):
         from moviepy.editor import VideoFileClip
 
-        if output_audio_path is None:
-            output_audio_path = video_path.rsplit('.', 1)[0] + format_to_save
+        i = 1
+        while f'music{i}.mp3' in os.listdir(output_path):
+            i += 1
+        output_path = os.path.join(output_path, f'music{i}.mp3')
 
         video = VideoFileClip(video_path)
-        video.audio.write_audiofile(output_audio_path)
+        video.audio.write_audiofile(output_path)
 
     @classmethod
-    def join_audios(cls, input_path, output_path=None):
+    def join_audios(cls, audios, output_path):
         from moviepy.editor import concatenate_audioclips, AudioFileClip
 
-        files = os.listdir(input_path)
-        audios = [os.path.join(input_path, file)
-                  for file in files if '.mp3' in file]
-
-        if output_path is None:
-            output_path = os.path.splitext(input_path)[0]
-
         clips = [AudioFileClip(aud) for aud in audios]
-
         final_clip = concatenate_audioclips(clips)
-        final_clip.write_audiofile(output_path + 'final_audio.mp3')
+
+        i = 1
+        while f'final_audio{i}.mp3' in os.listdir(output_path):
+            i += 1
+        output_path = os.path.join(output_path, f'final_audio{i}.mp3')
+
+        final_clip.write_audiofile(output_path)
 
 
 class TextToImage:
@@ -190,7 +210,7 @@ class TextToImage:
                               mask=image_mask, mode='RGBA')
         wordcloud.generate(text)
         image_colors = ImageColorGenerator(image)
-        # wordcloud.recolor(color_func=image_colors)
+        wordcloud.recolor(color_func=image_colors)
         i = 1
         while True:
             file = f'wordcloud{i}.png'
@@ -198,17 +218,3 @@ class TextToImage:
                 wordcloud.to_file(os.path.join(output_path, file))
                 break
             i += 1
-
-
-# MediaManipulations.remove_background_photo('../eu.jpg')
-# FileManipulations.word_equal_pdf('../arquivos/curr.doc', 'word_to_pdf')
-# FileManipulations.convert_to_png('../eu.jpg')
-# FileManipulations.extract_img_pdf('../arquivos/curr.pdf')
-# FileManipulations.join_audios('../')
-"""with open('../romeo.txt', 'r') as text:
-    TextToImage.wordcloud(text.read())"""
-# TextToImage.text_to_qrcode('https://github.com/wand-CE')
-# with open('../Romeo and Juliet.txt', 'r') as file:
-#    text = file.read()
-# FileManipulations.new(text, '../romeo.jpg')
-# FileManipulations.wordcloud(text, '../romeo.jpg')
