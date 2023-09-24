@@ -60,13 +60,14 @@ def delete_old_folders(path_to_check, age_limit_seconds):
                 try:
                     shutil.rmtree(folder_path)
                 except Exception as e:
-                    pass
+                    print(f"Error to delete {folder_path}: {e}")
 
 
 def run_scheduled_cleanup(app):
     age_limit_seconds = 1860
     path = os.path.join(app.config['MEDIA'], 'temp_users')
-    schedule.every(5).minutes.do(delete_old_folders,
+    delete_old_folders(path, age_limit_seconds)
+    schedule.every(1).minutes.do(delete_old_folders,
                                  path, age_limit_seconds)
 
     while True:
