@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template
 from website.models.servicos_model import Service, Category
 
@@ -10,8 +11,8 @@ def main():
     return render_template('home.html', categories=categories)
 
 
-@views.route('/servico/<categoryName>/<serviceName>', methods=['GET'])
-def servico(categoryName, serviceName):
+@views.route('/service/<categoryName>/<serviceName>', methods=['GET'])
+def service(categoryName, serviceName):
     categories = Category.get_categories()
     category = Category.query.filter_by(name=categoryName).first()
     service = Service.query.filter_by(function_name=serviceName).first()
@@ -19,5 +20,4 @@ def servico(categoryName, serviceName):
     return render_template('services.html',
                            category=category,
                            service=service,
-                           categories=categories,
-                           )
+                           categories=categories,)
