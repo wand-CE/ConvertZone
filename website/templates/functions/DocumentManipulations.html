@@ -1,0 +1,68 @@
+<div class="container mt-5">
+  <h3>{{ service.name_on_site }}</h3>
+  <br />
+  <h5 class="upload_text">Faça o upload abaixo:</h5>
+  <div
+    action="{{ url_for('http_requests.' + service.function_name) }}"
+    method="post"
+    enctype="multipart/form-data"
+    class="row d-flex justify-content-center align-items-center form_fisles"
+  >
+    <div id="dropZone" class="col-lg-4 bg-white rounded">
+      Arraste aqui o arquivo ou arquivos desejados, ou clique para selecionar
+      <ul id="filesDisplay"></ul>
+
+      {% if service.multiple == '1' %}
+      <input
+        type="file"
+        id="fileInput"
+        name="files"
+        style="display: none"
+        accept="{{ service.extensions }}"
+        multiple
+      />
+      {% else %}
+      <input
+        type="file"
+        id="fileInput"
+        name="files"
+        style="display: none"
+        accept="{{ service.extensions }}"
+      />
+      {% endif %}
+    </div>
+    <div class="col-lg-2 d-flex justify-content-center align-items-center">
+      <button
+        type="submit"
+        disabled
+        class="text-center btn btn-primary px-4 send"
+      >
+        Gerar
+      </button>
+    </div>
+    <div id="dropZone" class="col-lg-4 bg-white rounded mx-2"></div>
+  </div>
+</div>
+{% block scripts %}
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js"
+  type="module"
+></script>
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  type="module"
+></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  type="module"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"
+  type="module"
+></script>
+<script>
+  const token = "{{ csrf_token() }}";
+</script>
+
+{% endblock %}

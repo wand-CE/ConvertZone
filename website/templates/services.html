@@ -1,8 +1,16 @@
 {% extends 'base.html' %} {% block styles %}<link
   rel="stylesheet"
-  href="{{ url_for('static', filename='css/' + category.name + '.css') }}"
+  href="{{ url_for('static', filename='css/functions/' + category.name + '.css') }}"
 />
-{% endblock %} {% block conteudo %} {% include 'includes/' + category.name +
+{% endblock %} {% block conteudo %} {% include 'functions/' + category.name +
 '.html' %} {% endblock %} {% block scripts %}
-<script src="{{ url_for('static', filename='js/' + category.name + '.js') }}"></script>
+<!-- editar script abaixo depois -->
+<script>
+  window.message = "{{ category.name }}";
+</script>
+<script
+  src="{{ url_for('static', filename='js/functions/' + category.name + '.js') }}"
+  type="module"
+></script>
+
 {% endblock %}
