@@ -1,0 +1,81 @@
+.form_files {
+  display: inline-block;
+}
+
+#dropZone {
+  border: 1px dashed #000;
+  padding: 20px;
+  text-align: center;
+  min-height: 150px;
+  cursor: pointer;
+  overflow: auto;
+}
+.current-file {
+  /*
+  display: inline-block;
+  padding: 10px;*/
+  list-style-type: none;
+  border: 1px solid #ddd;
+  margin: 10px;
+  cursor: move;
+  vertical-align: top;
+}
+
+.send {
+  font-size: medium;
+}
+
+#dropZone::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: #f5f5f5;
+}
+
+#dropZone::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+#dropZone::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#dropZone::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+#dropZone {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f5f5f5;
+}
+
+#filesDisplay {
+  padding-left: 0;
+}
+
+.removeFile {
+  cursor: pointer;
+}
+
+@media (max-width: 991px) {
+  #dropZone {
+    height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .send {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  #dropZone {
+    height: 300px;
+  }
+
+  .upload_text {
+    padding-left: 75px;
+  }
+}

@@ -1,12 +1,13 @@
 .services img {
   height: auto;
+  max-width: 200px;
 }
 
 .services {
-  max-height: 400px;
-  height: 400px;
+  max-height: 300px;
+  height: 300px;
   overflow: hidden;
-  width: 300px;
+  width: 200px;
   align-items: center;
 }
 
