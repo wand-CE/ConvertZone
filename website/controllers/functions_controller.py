@@ -1,6 +1,6 @@
 import os
 # url_for e redirect temporarios
-from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, send_from_directory
 from website.services.site_functions import *
 from PIL import Image
 
@@ -11,6 +11,7 @@ http_requests = Blueprint('http_requests', __name__)
 
 def download_files(request_function, function_name, accept_extension):
     files = []
+    print(request_function.files.getlist('files'))
 
     if request_function.method == 'POST':
         uploaded_files = request_function.files.getlist('files')
@@ -28,6 +29,11 @@ def download_files(request_function, function_name, accept_extension):
     return files
 
 
+@http_requests.route('/download/<path:filename>', methods=['GET', 'POST'])
+def download_file(filename):
+    return send_from_directory(session['user_path_media'], filename, as_attachment=True)
+
+
 @http_requests.route('/word_equal_pdf', methods=['GET', 'POST'])
 def word_equal_pdf():
     function_name = DocumentManipulations.word_equal_pdf.__name__
@@ -38,13 +44,16 @@ def word_equal_pdf():
 
         extension = os.path.splitext(pdf_word[0])[1]
         if extension == '.docx':
-            DocumentManipulations.word_equal_pdf(
+            file = DocumentManipulations.word_equal_pdf(
                 pdf_word[0], 'word_to_pdf', path)
-        elif extension == '.pdf':
-            DocumentManipulations.word_equal_pdf(
-                pdf_word[0], 'pdf_to_word', path)
+            return jsonify({'path_file': f'word_equal_pdf/result/{file}'})
 
-    return redirect(url_for('views.main'))
+        if extension == '.pdf':
+            file = DocumentManipulations.word_equal_pdf(
+                pdf_word[0], 'pdf_to_word', path)
+            return jsonify({'path_file': f'word_equal_pdf/result/{file}'})
+
+    return '', 500
 
 
 @http_requests.route('/merge_pdf', methods=['GET', 'POST'])
@@ -54,9 +63,9 @@ def merge_pdf():
     if pdfs:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        DocumentManipulations.merge_pdf(pdfs, path)
+        file = DocumentManipulations.merge_pdf(pdfs, path)
 
-    return redirect(url_for('views.main'))
+        return jsonify({'path_file': f'merge_pdf/result/{file}'})
 
 
 @http_requests.route('/extract_img_pdf', methods=['GET', 'POST'])

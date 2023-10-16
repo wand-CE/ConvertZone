@@ -41,8 +41,10 @@ class DocumentManipulations:
                 i = 1
                 while f'PDF{i}.pdf' in os.listdir(output_path):
                     i += 1
-                output_path = os.path.join(output_path, f'PDF{i}.pdf')
+                file = f'PDF{i}.pdf'
+                output_path = os.path.join(output_path, file)
                 convert(input_path, output_path)
+                return file
             except Exception as e:
                 print(f"Error converting Word to PDF: {e}")
 
@@ -52,10 +54,12 @@ class DocumentManipulations:
             i = 1
             while f'WORD{i}.docx' in os.listdir(output_path):
                 i += 1
-            output_path = os.path.join(output_path, f'WORD{i}.docx')
+            file = f'WORD{i}.docx'
+            output_path = os.path.join(output_path, file)
 
             pdf.convert(output_path, start=0, end=None)
             pdf.close()
+            return file
 
     @classmethod
     def merge_pdf(cls, pdfs, path):
@@ -73,7 +77,7 @@ class DocumentManipulations:
             if f'final_pdf{i}.pdf' not in files:
                 with open(os.path.join(path, f'final_pdf{i}.pdf'), 'wb') as output_file:
                     merger.write(output_file)
-                    break
+                    return f'final_pdf{i}.pdf'
             i += 1
 
     @classmethod

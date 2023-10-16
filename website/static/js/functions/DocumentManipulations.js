@@ -1,3 +1,9 @@
+const form_files = document.querySelector(".form_files").dataset;
+const accept_files = form_files.accept_files.split(",");
+
+const current_url = form_files.url_function;
+const limit = parseInt(form_files.multiple);
+
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
 const filesDisplay = document.getElementById("filesDisplay");
@@ -31,6 +37,9 @@ dropZone.addEventListener("click", (event) => {
       if (allFiles[i].name == element.innerText) {
         allFiles.splice(i, 1);
         element.remove();
+        sendButton.disabled = dropZone.getElementsByTagName("li").length
+          ? false
+          : true;
         break;
       }
     }
@@ -39,14 +48,18 @@ dropZone.addEventListener("click", (event) => {
 
 fileInput.addEventListener("change", (e) => {
   const files = e.target.files;
-  addFiles(files);
+  if (limit === 0) {
+    allFiles = [files[0]];
+    displayFiles();
+  } else {
+    addFiles(files);
+  }
 });
 
 function addFiles(files) {
   for (let i = 0; i < files.length; i++) {
     if (
-      /* mudar logica depois */
-      files[i].type === "application/pdf" &&
+      accept_files.includes(files[i].type) &&
       !allFiles.some((f) => f.name === files[i].name)
     ) {
       allFiles.push(files[i]);
@@ -64,6 +77,7 @@ function displayFiles() {
 
     const new_button = document.createElement("div");
     new_button.className = "bi bi-x-square float-right removeFile h-25";
+    new_button.style.color = "red";
     currentFile.appendChild(new_button);
 
     filesDisplay.appendChild(currentFile);
@@ -91,11 +105,10 @@ sendButton.addEventListener("click", () => {
     const formData = new FormData();
 
     allFiles.forEach((file) => {
-      formData.append("filesList", file);
+      formData.append("files", file);
     });
 
-    /* editar para função correta, dependendo da pagina que estou */
-    fetch("/api/merge_pdf", {
+    fetch(`/api/${current_url}`, {
       method: "POST",
       headers: {
         "X-CSRFToken": token,
@@ -111,9 +124,14 @@ sendButton.addEventListener("click", () => {
       })
       .then((data) => {
         console.log("Server response:", data);
-        alert(data);
+        document.querySelector(
+          "#finalZone"
+        ).innerHTML = `<a href="/api/download/${data["path_file"]}" download>
+          <button type="button">Download</button>
+        </a>`;
       })
       .catch((_) => {
+        console.log(_);
         alert("Não foi possível concluir a operação");
       });
   } else {

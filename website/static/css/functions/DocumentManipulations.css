@@ -10,6 +10,10 @@
   cursor: pointer;
   overflow: auto;
 }
+
+#finalZone {
+  height: 300px;
+}
 .current-file {
   /*
   display: inline-block;
