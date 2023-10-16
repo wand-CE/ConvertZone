@@ -11,19 +11,21 @@ class Service(db.Model):
     __tablename__ = 'services'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    function_name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False)
     name_on_site = db.Column(db.String, nullable=False)
     multiple = db.Column(db.String, nullable=False)
     extensions = db.Column(db.String, nullable=False)
+    accept_type = db.Column(db.String)
 
-    def __init__(self, function_name,
+    def __init__(self, name,
                  name_on_site, multiple,
-                 extensions, id=None):
+                 extensions, accept_type, id=None,):
         self.id = id
-        self.function_name = function_name
+        self.name = name
         self.name_on_site = name_on_site
         self.multiple = multiple
         self.extensions = extensions
+        self.accept_type = accept_type
 
     def add_service(self):
         db.session.add(self)
@@ -83,15 +85,16 @@ def insert_function_names():
             category.add_category()
 
         for func_name, value in vars(cls).items():
-            if not Service.query.filter_by(function_name=func_name).first():
+            if not Service.query.filter_by(name=func_name).first():
                 if isinstance(value, classmethod) and not func_name.startswith("__"):
                     attributes = cls.attributes.get(func_name, func_name)
 
                     service = Service(
-                        function_name=func_name,
+                        name=func_name,
                         name_on_site=attributes[0],
                         multiple=attributes[1],
                         extensions=attributes[2],
+                        accept_type=attributes[3]
                     )
 
                     service.add_service()
