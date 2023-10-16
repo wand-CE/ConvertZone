@@ -15,7 +15,7 @@ def main():
 def service(categoryName, serviceName):
     categories = Category.get_categories()
     category = Category.query.filter_by(name=categoryName).first()
-    service = Service.query.filter_by(function_name=serviceName).first()
+    service = Service.query.filter_by(name=serviceName).first()
 
     return render_template('services.html',
                            category=category,

@@ -21,13 +21,13 @@
       {% for service in category.functions %}
       <a
         class="mb-2 mx-3 text-dark"
-        href="{{ url_for('views.service', categoryName=category.name, serviceName=service.function_name) }}"
+        href="{{ url_for('views.service', categoryName=category.name, serviceName=service.name) }}"
       >
         <div class="card custom-card d-flex flex-column services mb-4">
           <img
             class="card-img"
-            src="{{ url_for('static', filename='img/' + service.function_name + '.png') }}"
-            alt="{{ service.function_name }}"
+            src="{{ url_for('static', filename='img/' + service.name + '.png') }}"
+            alt="{{ service.name }}"
           />
           <div class="card-body d-flex flex-column">
             <strong class="card-title">{{ service.name_on_site }}</strong>
