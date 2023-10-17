@@ -5,8 +5,6 @@ models.py
 import os
 import numpy as np
 from PIL import Image, UnidentifiedImageError
-from flask import url_for
-
 
 # all classes have a dictionary named 'attributtes', where the key is the name of the functions,
 # and receive a list on value, where the first element of list is the name that goes on site,
@@ -50,6 +48,7 @@ class DocumentManipulations:
 
         elif convert_to == 'pdf_to_word':
             from pdf2docx import Converter
+
             pdf = Converter(input_path)
             i = 1
             while f'WORD{i}.docx' in os.listdir(output_path):
@@ -83,8 +82,10 @@ class DocumentManipulations:
     @classmethod
     def extract_img_pdf(cls, input_file, output_path):
         from pikepdf import Pdf, PdfImage
+        import zipfile
 
         pdf = Pdf.open(input_file)
+        list_images = []
 
         for page in pdf.pages:
             for name, image in page.images.items():
@@ -92,9 +93,22 @@ class DocumentManipulations:
                 i = 1
                 while any(file.startswith(name[1:] + str(i)) for file in os.listdir(output_path)):
                     i += 1
-                name = name + str(i)
-                save_img.extract_to(
-                    fileprefix=os.path.join(output_path, name[1:]))
+                name += str(i)
+                path = os.path.join(output_path, name[1:])
+                file = save_img.extract_to(fileprefix=path).replace('\\', '/')
+                list_images.append(file.split('/')[-1])
+
+                i = 1
+
+        while f'images{i}.zip' in os.listdir(output_path):
+            i += 1
+        file = f'images{i}.zip'
+
+        with zipfile.ZipFile(os.path.join(output_path, file), 'w') as novo_zip:
+            for arquivo in list_images:
+                novo_zip.write(os.path.join(output_path, arquivo),
+                               os.path.basename(arquivo))
+        return file
 
 
 class MediaManipulations:

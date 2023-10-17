@@ -37,23 +37,25 @@ def download_file(filename):
 @http_requests.route('/word_equal_pdf', methods=['GET', 'POST'])
 def word_equal_pdf():
     function_name = DocumentManipulations.word_equal_pdf.__name__
-    pdf_word = download_files(request, function_name, ['.pdf', '.docx'])
+    extension_list = ['.pdf', '.docx']
+    pdf_word = download_files(request, function_name, extension_list)
     if len(pdf_word) == 1:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
 
         extension = os.path.splitext(pdf_word[0])[1]
-        if extension == '.docx':
-            file = DocumentManipulations.word_equal_pdf(
-                pdf_word[0], 'word_to_pdf', path)
-            return jsonify({'path_file': f'word_equal_pdf/result/{file}'})
+        if extension not in extension_list:
+            return '', 500
 
-        if extension == '.pdf':
-            file = DocumentManipulations.word_equal_pdf(
-                pdf_word[0], 'pdf_to_word', path)
-            return jsonify({'path_file': f'word_equal_pdf/result/{file}'})
+        convert_to = 'word_to_pdf' if extension == '.docx' else 'pdf_to_word'
 
-    return '', 500
+        file = DocumentManipulations.word_equal_pdf(
+            pdf_word[0], convert_to, path)
+
+        return jsonify({
+            'path_file': f'word_equal_pdf/result/{file}',
+            'file_name': file,
+        })
 
 
 @http_requests.route('/merge_pdf', methods=['GET', 'POST'])
@@ -65,7 +67,10 @@ def merge_pdf():
             session['user_path_media'], function_name, 'result')
         file = DocumentManipulations.merge_pdf(pdfs, path)
 
-        return jsonify({'path_file': f'merge_pdf/result/{file}'})
+        return jsonify({
+            'path_file': f'merge_pdf/result/{file}',
+            'file_name': file,
+        })
 
 
 @http_requests.route('/extract_img_pdf', methods=['GET', 'POST'])
@@ -75,9 +80,13 @@ def extract_img_pdf():
     if len(pdf) == 1:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        DocumentManipulations.extract_img_pdf(pdf[0], path)
+        file = DocumentManipulations.extract_img_pdf(pdf[0], path)
+        return jsonify({
+            'path_file': f'extract_img_pdf/result/{file}',
+            'file_name': file,
+        })
 
-    return redirect(url_for('views.main'))
+    return '', 500
 
 
 @http_requests.route('/remove_background_photo', methods=['GET', 'POST'])
