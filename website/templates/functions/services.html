@@ -6,8 +6,10 @@
     data-accept_files="{{ service.accept_type }}"
     data-url_function="{{ service.name }}"
     data-multiple="{{ service.multiple }}"
+    data-service_type="{{ category.name }}"
     class="row d-flex justify-content-center align-items-center form_files"
   >
+    {% if category.name != 'TextToImage' %}
     <div id="dropZone" class="col-lg-4 bg-white rounded mx-2">
       Arraste aqui o arquivo ou arquivos desejados, ou clique para selecionar
       <ul id="filesDisplay"></ul>
@@ -17,9 +19,12 @@
         name="files"
         style="display: none"
         accept="{{ service.extensions }}"
-        multiple
       />
     </div>
+    {% else %}
+    <textarea class="col-lg-4 bg-white rounded mx-2" id="textZone"></textarea>
+    
+    {% endif %}
     <div class="col-lg-2 d-flex justify-content-center align-items-center">
       <button
         type="submit"
@@ -32,10 +37,12 @@
     <div id="finalZone" class="col-lg-4 bg-white rounded mx-2">
       <div id="finalZoneChildren">
         <div id="show_file">
-          <img height="100px" />
+          <img height="150px" />
         </div>
         <div id="file_name"></div>
-        <a id="download_button" class="btn btn-primary" download> Baixar </a>
+        <a id="download_button" class="btn btn-primary mt-2" download>
+          Baixar
+        </a>
       </div>
     </div>
   </div>

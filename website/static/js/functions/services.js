@@ -3,11 +3,14 @@ const accept_files = form_files.accept_files.split(",");
 
 const current_url = form_files.url_function;
 const limit = parseInt(form_files.multiple);
+const service_type = form_files.service_type;
 
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
 const filesDisplay = document.getElementById("filesDisplay");
 const sendButton = document.querySelector(".send");
+
+fileInput.multiple = limit ? true : false;
 
 let allFiles = [];
 
@@ -48,23 +51,27 @@ dropZone.addEventListener("click", (event) => {
 
 fileInput.addEventListener("change", (e) => {
   const files = e.target.files;
-  if (limit === 0) {
-    if (files.length) {
-      allFiles = [files[0]];
-      displayFiles();
-    }
-  } else {
-    addFiles(files);
-  }
+  console.log(files);
+  addFiles(files);
 });
 
 function addFiles(files) {
-  for (let i = 0; i < files.length; i++) {
+  if (limit === 0) {
     if (
-      accept_files.includes(files[i].type) &&
-      !allFiles.some((f) => f.name === files[i].name)
+      files.length &&
+      (accept_files.includes(files[0].type) ||
+        files[0].type.startsWith("image/"))
     ) {
-      allFiles.push(files[i]);
+      allFiles = [files[0]];
+    }
+  } else {
+    for (let i = 0; i < files.length; i++) {
+      if (
+        accept_files.includes(files[i].type) &&
+        !allFiles.some((f) => f.name === files[i].name)
+      ) {
+        allFiles.push(files[i]);
+      }
     }
   }
   displayFiles();
@@ -131,14 +138,16 @@ sendButton.addEventListener("click", () => {
         let path = data["path_file"];
         let fileName = data["file_name"];
         let extension = {
-          docx: "word.png",
-          pdf: "pdf.png",
-          zip: "zip.png",
+          docx: "/static/img/word.png",
+          pdf: "/static/img/pdf.png",
+          zip: "/static/img/zip.png",
+          mp3: "/static/img/mp3.png",
+          png: `/api/download/${path}`,
         };
 
-        document.querySelector("#show_file").children[0].src = `/static/img/${
-          extension[fileName.split(".")[1]]
-        }`;
+        document.querySelector("#show_file").children[0].src =
+          extension[fileName.split(".")[1]];
+
         document.querySelector("#file_name").innerText = fileName;
         document.querySelector(
           "#download_button"

@@ -37,10 +37,13 @@ class DocumentManipulations:
             from docx2pdf import convert
             try:
                 i = 1
+                print(i)
                 while f'PDF{i}.pdf' in os.listdir(output_path):
                     i += 1
                 file = f'PDF{i}.pdf'
+                print(file)
                 output_path = os.path.join(output_path, file)
+                print(output_path)
                 convert(input_path, output_path)
                 return file
             except Exception as e:
@@ -49,15 +52,16 @@ class DocumentManipulations:
         elif convert_to == 'pdf_to_word':
             from pdf2docx import Converter
 
-            pdf = Converter(input_path)
             i = 1
             while f'WORD{i}.docx' in os.listdir(output_path):
                 i += 1
             file = f'WORD{i}.docx'
             output_path = os.path.join(output_path, file)
 
+            pdf = Converter(input_path)
             pdf.convert(output_path, start=0, end=None)
             pdf.close()
+
             return file
 
     @classmethod
@@ -98,10 +102,10 @@ class DocumentManipulations:
                 file = save_img.extract_to(fileprefix=path).replace('\\', '/')
                 list_images.append(file.split('/')[-1])
 
-                i = 1
-
+        i = 1
         while f'images{i}.zip' in os.listdir(output_path):
             i += 1
+
         file = f'images{i}.zip'
 
         with zipfile.ZipFile(os.path.join(output_path, file), 'w') as novo_zip:
@@ -135,6 +139,8 @@ class MediaManipulations:
 
             output_file_path = os.path.join(output_path, f'image{i}.png')
             output.save(output_file_path)
+
+            return f'image{i}.png'
         except UnidentifiedImageError:
             print('Formato de arquivo errado')
         except:
@@ -151,6 +157,8 @@ class MediaManipulations:
         with Image.open(input_path) as img:
             img.save(output_path, 'PNG')
 
+        return f'image{i}.png'
+
     @classmethod
     def video_to_audio(cls, video_path, output_path):
         from moviepy.editor import VideoFileClip
@@ -162,6 +170,8 @@ class MediaManipulations:
 
         video = VideoFileClip(video_path)
         video.audio.write_audiofile(output_path)
+
+        return f'music{i}.mp3'
 
     @classmethod
     def join_audios(cls, audios, output_path):
@@ -176,6 +186,8 @@ class MediaManipulations:
         output_path = os.path.join(output_path, f'final_audio{i}.mp3')
 
         final_clip.write_audiofile(output_path)
+
+        return f'final_audio{i}.mp3'
 
 
 class TextToImage:
@@ -199,11 +211,11 @@ class TextToImage:
             file = f'qrcode{i}.png'
             if file not in os.listdir(output_path):
                 image.save(os.path.join(output_path, file))
-                break
+                return file
             i += 1
 
     @classmethod
-    def wordcloud(cls, text, output_path, image=None):
+    def wordcloud(cls, text, output_path, image=None, color=None):
 
         import matplotlib.pyplot as plt
         from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -227,12 +239,14 @@ class TextToImage:
         wordcloud = WordCloud(width=canvas_width, height=canvas_height, background_color='white',
                               mask=image_mask, mode='RGBA')
         wordcloud.generate(text)
-        image_colors = ImageColorGenerator(image)
-        wordcloud.recolor(color_func=image_colors)
+        # editar depois
+        if color:
+            image_colors = ImageColorGenerator(image)
+            wordcloud.recolor(color_func=image_colors)
         i = 1
         while True:
             file = f'wordcloud{i}.png'
             if file not in os.listdir(output_path):
                 wordcloud.to_file(os.path.join(output_path, file))
-                break
+                return file
             i += 1

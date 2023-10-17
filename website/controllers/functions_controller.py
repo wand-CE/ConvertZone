@@ -96,9 +96,13 @@ def remove_background_photo():
     if len(photo) == 1:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        MediaManipulations.remove_background_photo(photo[0], path)
+        file = MediaManipulations.remove_background_photo(photo[0], path)
+        return jsonify({
+            'path_file': f'remove_background_photo/result/{file}',
+            'file_name': file,
+        })
 
-    return redirect(url_for('views.main'))
+    return '', 500
 
 
 @http_requests.route('/convert_to_png', methods=['GET', 'POST'])
@@ -109,9 +113,13 @@ def convert_to_png():
         path = os.path.join(
             session['user_path_media'], function_name)
         output_path = os.path.join(path, 'result')
-        MediaManipulations.convert_to_png(img[0], output_path)
+        file = MediaManipulations.convert_to_png(img[0], output_path)
+        return jsonify({
+            'path_file': f'convert_to_png/result/{file}',
+            'file_name': file,
+        })
 
-    return redirect(url_for('views.main'))
+    return '', 500
 
 
 @http_requests.route('/video_to_audio', methods=['GET', 'POST'])
@@ -121,9 +129,13 @@ def video_to_audio():
     if len(video) == 1:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        MediaManipulations.video_to_audio(video[0], path)
+        file = MediaManipulations.video_to_audio(video[0], path)
+        return jsonify({
+            'path_file': f'video_to_audio/result/{file}',
+            'file_name': file,
+        })
 
-    return redirect(url_for('views.main'))
+    return '', 500
 
 
 @http_requests.route('/join_audios', methods=['GET', 'POST'])
@@ -133,9 +145,13 @@ def join_audios():
     if audios:
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        MediaManipulations.join_audios(audios, path)
+        file = MediaManipulations.join_audios(audios, path)
+        return jsonify({
+            'path_file': f'join_audios/result/{file}',
+            'file_name': file,
+        })
 
-    return redirect(url_for('views.main'))
+    return '', 500
 
 
 @http_requests.route('/text_to_qrcode', methods=['GET', 'POST'])
@@ -145,9 +161,14 @@ def text_to_qrcode():
         text = request.form.get('text')
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        TextToImage.text_to_qrcode(text, path)
+        file = TextToImage.text_to_qrcode(text, path)
 
-    return redirect(url_for('views.main'))
+        return jsonify({
+            'path_file': f'text_to_qrcode/result/{file}',
+            'file_name': file,
+        })
+
+    return '', 500
 
 
 @http_requests.route('/wordcloud', methods=['GET', 'POST'])
@@ -157,6 +178,11 @@ def wordcloud():
         text = request.form.get('text')
         path = os.path.join(
             session['user_path_media'], function_name, 'result')
-        TextToImage.wordcloud(text, path)
+        file = TextToImage.wordcloud(text, path)
 
-    return redirect(url_for('views.main'))
+        return jsonify({
+            'path_file': f'wordcloud/result/{file}',
+            'file_name': file,
+        })
+
+    return '', 500
