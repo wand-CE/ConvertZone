@@ -13,11 +13,19 @@
 
 #finalZone {
   height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+#finalZoneChildren {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .current-file {
-  /*
-  display: inline-block;
-  padding: 10px;*/
   list-style-type: none;
   border: 1px solid #ddd;
   margin: 10px;

@@ -49,8 +49,10 @@ dropZone.addEventListener("click", (event) => {
 fileInput.addEventListener("change", (e) => {
   const files = e.target.files;
   if (limit === 0) {
-    allFiles = [files[0]];
-    displayFiles();
+    if (files.length) {
+      allFiles = [files[0]];
+      displayFiles();
+    }
   } else {
     addFiles(files);
   }
@@ -101,7 +103,10 @@ $(() => {
 $(filesDisplay).disableSelection();
 
 sendButton.addEventListener("click", () => {
+  const load_element_visible = document.querySelector(".loader-wrapper");
+
   if (allFiles.length) {
+    load_element_visible.style.display = "flex";
     const formData = new FormData();
 
     allFiles.forEach((file) => {
@@ -123,19 +128,33 @@ sendButton.addEventListener("click", () => {
         }
       })
       .then((data) => {
-        console.log("Server response:", data);
+        let path = data["path_file"];
+        let fileName = data["file_name"];
+        let extension = {
+          docx: "word.png",
+          pdf: "pdf.png",
+          zip: "zip.png",
+        };
+
+        document.querySelector("#show_file").children[0].src = `/static/img/${
+          extension[fileName.split(".")[1]]
+        }`;
+        document.querySelector("#file_name").innerText = fileName;
         document.querySelector(
-          "#finalZone"
-        ).innerHTML = `<a href="/api/download/${data["path_file"]}" download>
-          <button type="button">Download</button>
-        </a>`;
+          "#download_button"
+        ).href = `/api/download/${path}`;
+
+        load_element_visible.style.display = "none";
+
+        document.querySelector("#finalZoneChildren").style.display = "flex";
       })
       .catch((_) => {
-        console.log(_);
+        load_element_visible.style.display = "none";
         alert("Não foi possível concluir a operação");
       });
   } else {
     alert("Adicione arquivo");
+    load_element_visible.style.display = "none";
   }
 });
 
