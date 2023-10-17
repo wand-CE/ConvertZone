@@ -3,7 +3,6 @@
   <br />
   <h5 class="upload_text">Faça o upload abaixo:</h5>
   <div
-    data-target="oi"
     data-accept_files="{{ service.accept_type }}"
     data-url_function="{{ service.name }}"
     data-multiple="{{ service.multiple }}"
@@ -30,7 +29,19 @@
         Gerar
       </button>
     </div>
-    <div id="finalZone" class="col-lg-4 bg-white rounded mx-2"></div>
+    <div id="finalZone" class="col-lg-4 bg-white rounded mx-2">
+      <div id="finalZoneChildren">
+        <div id="show_file">
+          <img height="100px" />
+        </div>
+        <div id="file_name"></div>
+        <a id="download_button" class="btn btn-primary" download> Baixar </a>
+      </div>
+    </div>
+  </div>
+  <div class="loader-wrapper">
+    <div class="loader"></div>
+    <p>Gerando...</p>
   </div>
 </div>
 {% block scripts %}
