@@ -6,7 +6,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
-
 db = SQLAlchemy()
 DB_NAME = 'convert_zone.db'
 
@@ -51,6 +50,8 @@ def delete_old_folders(path_to_check, age_limit_seconds):
     import shutil
 
     current_time = time.time()
+
+    os.makedirs(path_to_check, exist_ok=True)
 
     for foldername in os.listdir(path_to_check):
         folder_path = os.path.join(path_to_check, foldername)

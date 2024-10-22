@@ -4,3 +4,4 @@ temp_users*
 !.gitkeep
 venv
 .prettierignore
+.idea

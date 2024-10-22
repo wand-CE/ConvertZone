@@ -6,6 +6,7 @@ import os
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 
+
 # all classes have a dictionary named 'attributtes', where the key is the name of the functions,
 # and receive a list on value, where the first element of list is the name that goes on site,
 # and the second value is a boolean that specifies if the element will receive many files
@@ -98,7 +99,7 @@ class DocumentManipulations:
                 while any(file.startswith(name[1:] + str(i)) for file in os.listdir(output_path)):
                     i += 1
                 name += str(i)
-                path = os.path.join(output_path, name[1:])
+                path = str(os.path.join(output_path, name[1:]))
                 file = save_img.extract_to(fileprefix=path).replace('\\', '/')
                 list_images.append(file.split('/')[-1])
 
@@ -143,8 +144,8 @@ class MediaManipulations:
             return f'image{i}.png'
         except UnidentifiedImageError:
             print('Formato de arquivo errado')
-        except:
-            print('Erro interno')
+        except Exception as e:
+            print(f'Erro interno: {e}')
 
     @classmethod
     def convert_to_png(cls, input_path, output_path):
@@ -203,7 +204,7 @@ class TextToImage:
 
         qr = qrcode.QRCode(version=1,  # Nível de correção de erro (1 a 40)
                            box_size=50,  # Tamanho de cada pixel do QR code
-                           border=2,)  # Tamanho da margem em torno do QR code
+                           border=2, )  # Tamanho da margem em torno do QR code
         qr.add_data(text)
         image = qr.make_image(fill_color="black", back_color="white")
         i = 0
