@@ -131,7 +131,14 @@ class MediaManipulations:
         try:
             import rembg
 
+            model_folder = 'rembg_models'
+
+            for root, dirs, files in os.walk('.'):
+                if model_folder in dirs:
+                    os.environ['U2NET_HOME'] = os.path.join(root, model_folder)
+
             inp = Image.open(image)
+
             output = rembg.remove(inp)
 
             i = 1
