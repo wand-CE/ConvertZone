@@ -38,13 +38,10 @@ class DocumentManipulations:
             from docx2pdf import convert
             try:
                 i = 1
-                print(i)
                 while f'PDF{i}.pdf' in os.listdir(output_path):
                     i += 1
                 file = f'PDF{i}.pdf'
-                print(file)
                 output_path = os.path.join(output_path, file)
-                print(output_path)
                 convert(input_path, output_path)
                 return file
             except Exception as e:
@@ -138,9 +135,7 @@ class MediaManipulations:
                     os.environ['U2NET_HOME'] = os.path.join(root, model_folder)
 
             inp = Image.open(image)
-
             output = rembg.remove(inp)
-
             i = 1
             while f'image{i}.png' in os.listdir(output_path):
                 i += 1
