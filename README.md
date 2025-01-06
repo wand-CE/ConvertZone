@@ -109,6 +109,24 @@ Quer contribuir com o ConvertZone? Siga os passos abaixo:
 
 ---
 
+## 🎯 Evidências de Execução
+
+### DESKTOP
+
+#### Tela principal desktop:
+![Tela Principal Desktop](evidencias/tela_principal.png)
+
+#### Tela funcionalidade da nuvem de palavras desktop:
+![Tela Funcionalidade Desktop](evidencias/tela_funcionalidade.png)
+
+---
+### MOBILE
+
+#### Telas Mobile:
+![Tela Principal Mobile](evidencias/tela_principal_mobile.png) ![Tela Funcionalidade Mobile](evidencias/tela_funcionalidade_mobile.png)
+
+
+
 ## 🎯 Próximos Passos
 
 - Adicionar suporte a mais tipos de arquivo.
